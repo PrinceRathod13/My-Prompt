@@ -7,7 +7,7 @@ const {
 module.exports = async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
   if (req.method === "OPTIONS") return res.status(200).end();
 
@@ -16,36 +16,42 @@ module.exports = async function handler(req, res) {
   }
 
   try {
+    if (!isFirebaseAdminConfigured()) {
+      return res.status(500).json({
+        error: "Firebase Admin is not configured."
+      });
+    }
+
+    const authHeader = req.headers.authorization || "";
+    if (!authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({
+        error: "Please sign in to verify account ownership."
+      });
+    }
+
     const body =
       typeof req.body === "string" ? JSON.parse(req.body) : req.body || {};
 
     const email = (body.email || "").trim().toLowerCase();
-    const testEmail = (process.env.TEST_DELETION_EMAIL || "")
-      .trim()
-      .toLowerCase();
-
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return res.status(400).json({ error: "Enter a valid email address." });
-    }
-
-    // Only allow the dedicated test account.
-    if (!testEmail || email !== testEmail) {
-      return res.status(403).json({
-        error: "This testing page is restricted to the configured test account."
-      });
-    }
-
-    if (!isFirebaseAdminConfigured()) {
-      return res.status(500).json({
-        error: "Firebase Admin is not configured. Check your Vercel environment variables."
-      });
+    if (!email) {
+      return res.status(400).json({ error: "Email is required." });
     }
 
     const admin = getFirebaseAdmin();
-    const user = await admin.auth().getUserByEmail(email);
+    const decoded = await admin.auth().verifyIdToken(
+      authHeader.substring(7).trim()
+    );
+
+    if (!decoded.email || decoded.email.toLowerCase() !== email) {
+      return res.status(403).json({
+        error: "The signed-in account does not match this email."
+      });
+    }
+
+    const uid = decoded.uid;
     const db = admin.firestore();
 
-    // Delete the known personal data documents.
+    // Delete the user's known personal Firestore documents.
     const collections = [
       "users",
       "user_favorites",
@@ -54,22 +60,22 @@ module.exports = async function handler(req, res) {
     ];
 
     for (const collection of collections) {
-      await db.collection(collection).doc(user.uid).delete();
+      await db.collection(collection).doc(uid).delete();
     }
 
-    // Delete the Firebase Authentication account.
-    await admin.auth().deleteUser(user.uid);
+    // Delete Firebase Authentication account.
+    await admin.auth().deleteUser(uid);
 
     return res.status(200).json({
       success: true,
-      message: "Test account deleted successfully."
+      message: "Your MyPrompt account has been deleted."
     });
 
   } catch (error) {
-    console.error("Account deletion failed:", error);
+    console.error("Deletion error:", error);
 
     return res.status(500).json({
-      error: "Account deletion failed. Please check the server logs."
+      error: "Account deletion failed. Please try again."
     });
   }
 };
