@@ -1,0 +1,13 @@
+{
+  "name": "myprompt-account-deletion",
+  "version": "1.0.0",
+  "description": "MyPrompt Account Deletion Single-Page Website for Vercel",
+  "main": "api/request-deletion.js",
+  "scripts": {
+    "start": "node -e \"const http=require('http'),fs=require('fs');http.createServer((req,res)=>{res.writeHead(200,{'Content-Type':'text/html'});res.end(fs.readFileSync('public/index.html'));}).listen(3000,()=>console.log('Server running on http://localhost:3000'))\""
+  },
+  "dependencies": {
+    "firebase-admin": "^12.0.0"
+  },
+  "private": true
+}
