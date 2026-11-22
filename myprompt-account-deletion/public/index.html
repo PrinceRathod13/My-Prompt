@@ -1,10 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MyPrompt Account Deletion</title>
-  <link rel="icon" type="image/png" href="logo.png">
+  <title>MyPrompt - Delete Account</title>
+
   <style>
     * {
       box-sizing: border-box;
@@ -13,398 +14,317 @@
     }
 
     body {
-      background-color: #FFFFFF;
-      color: #0F172A;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-family: Arial, sans-serif;
+      background: #ffffff;
+      color: #0f172a;
       min-height: 100vh;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 32px 20px;
+      padding: 20px;
     }
 
     .container {
       width: 100%;
-      max-width: 440px;
-      margin: 0 auto;
+      max-width: 420px;
     }
 
-    .brand-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 28px;
-    }
-
-    .brand-logo {
-      width: 40px;
-      height: 40px;
-      object-fit: contain;
-    }
-
-    .brand-title {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      color: #0F172A;
+    .brand {
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+      color: #2563eb;
+      margin-bottom: 30px;
     }
 
     h1 {
-      font-size: 26px;
-      font-weight: 700;
-      line-height: 1.25;
-      color: #0F172A;
+      font-size: 25px;
+      text-align: center;
       margin-bottom: 12px;
-      letter-spacing: -0.02em;
     }
 
-    .text {
-      font-size: 15px;
-      line-height: 1.55;
-      color: #475569;
+    .description {
+      text-align: center;
+      color: #64748b;
+      font-size: 14px;
+      line-height: 1.6;
       margin-bottom: 28px;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
     }
 
     label {
       display: block;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 600;
-      color: #334155;
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
+      margin-bottom: 9px;
     }
 
-    input[type="email"] {
+    input {
       width: 100%;
       height: 50px;
-      padding: 0 16px;
+      padding: 0 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 9px;
       font-size: 15px;
-      color: #0F172A;
-      background-color: #FFFFFF;
-      border: 1.5px solid #CBD5E1;
-      border-radius: 10px;
+      margin-bottom: 18px;
       outline: none;
-      transition: border-color 0.15s ease;
     }
 
-    input[type="email"]:focus {
-      border-color: #2563EB;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    input:focus {
+      border-color: #2563eb;
     }
 
-    .btn-blue {
+    button {
       width: 100%;
       height: 50px;
-      background-color: #2563EB;
-      color: #FFFFFF;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 9px;
       font-size: 15px;
       font-weight: 600;
-      border: none;
-      border-radius: 10px;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background-color 0.15s ease;
     }
 
-    .btn-blue:hover:not(:disabled) {
-      background-color: #1D4ED8;
+    button:hover:not(:disabled) {
+      background: #1d4ed8;
     }
 
-    .btn-blue:disabled {
-      background-color: #93C5FD;
+    button:disabled {
+      opacity: 0.6;
       cursor: not-allowed;
     }
 
-    .alert {
+    .message {
       display: none;
-      padding: 14px 16px;
-      border-radius: 10px;
+      margin-top: 20px;
+      padding: 14px;
+      border-radius: 9px;
       font-size: 14px;
-      line-height: 1.5;
-      margin-bottom: 20px;
-    }
-
-    .alert-error {
-      background-color: #FEF2F2;
-      color: #B91C1C;
-      border: 1px solid #FCA5A5;
-    }
-
-    .alert-success {
-      background-color: #F0FDF4;
-      color: #15803D;
-      border: 1px solid #86EFAC;
-    }
-
-    .confirmation-box {
-      display: none;
-      padding: 24px;
-      border: 1px solid #E2E8F0;
-      border-radius: 12px;
-      background-color: #FAFAFA;
-      margin-top: 10px;
-    }
-
-    .confirmation-box h2 {
-      font-size: 18px;
-      font-weight: 700;
-      color: #0F172A;
-      margin-bottom: 10px;
-    }
-
-    .confirmation-box p {
-      font-size: 14px;
-      line-height: 1.6;
-      color: #475569;
-      margin-bottom: 14px;
-    }
-
-    .confirmation-box .verify-link-wrapper {
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px dashed #CBD5E1;
-    }
-
-    .confirmation-box .verify-link-btn {
-      display: inline-block;
-      padding: 10px 18px;
-      background-color: #2563EB;
-      color: #FFFFFF;
-      text-decoration: none;
-      font-size: 13.5px;
-      font-weight: 600;
-      border-radius: 8px;
-    }
-
-    .confirmation-box .verify-link-btn:hover {
-      background-color: #1D4ED8;
-    }
-
-    .footer-note {
-      margin-top: 36px;
-      font-size: 12.5px;
-      color: #94A3B8;
       line-height: 1.5;
       text-align: center;
     }
+
+    .error {
+      background: #fef2f2;
+      color: #b91c1c;
+    }
+
+    .success {
+      background: #f0fdf4;
+      color: #15803d;
+    }
+
+    .footer {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 12px;
+      margin-top: 35px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
   </style>
 </head>
+
 <body>
 
-  <div class="container">
-    <!-- Brand Title at Top -->
-    <div class="brand-header">
-      <img src="logo.png" alt="MyPrompt Logo" class="brand-logo" onerror="this.style.display='none'">
-      <div class="brand-title">MyPrompt</div>
-    </div>
+  <main class="container">
 
-    <!-- Error Alert Banner -->
-    <div id="errorAlert" class="alert alert-error"></div>
+    <div class="brand">MyPrompt</div>
 
-    <!-- State 1: Request Deletion Form -->
-    <div id="requestState">
+    <section id="requestState">
       <h1>Delete Your Account</h1>
-      <p class="text">
-        Enter your registered MyPrompt email address to request deletion of your account and associated personal data.
+
+      <p class="description">
+        Enter your registered email address to request deletion
+        of your MyPrompt account and associated personal data.
       </p>
 
-      <form id="deletionForm" novalidate>
-        <div class="form-group">
-          <label for="emailInput">Registered Email Address</label>
-          <input
-            type="email"
-            id="emailInput"
-            name="email"
-            placeholder="name@example.com"
-            required
-            autocomplete="email"
-          >
-        </div>
+      <form id="deletionForm">
 
-        <button type="submit" id="submitBtn" class="btn-blue">
-          Request Account Deletion
+        <label for="emailInput">Email Address</label>
+
+        <input
+          type="email"
+          id="emailInput"
+          name="email"
+          placeholder="Enter your email address"
+          autocomplete="email"
+          required
+        >
+
+        <button type="submit" id="submitBtn">
+          Delete Account
         </button>
+
       </form>
-    </div>
+    </section>
 
-    <!-- State 2: Request Submitted Confirmation -->
-    <div id="submittedConfirmation" class="confirmation-box">
-      <h2>Verification Email Sent</h2>
-      <p id="submittedMessage">
-        We have processed your request. Please check your inbox and click the verification link to confirm the permanent deletion of your account.
-      </p>
-      <div id="previewVerificationLink" class="verify-link-wrapper" style="display: none;">
-        <p style="font-size: 12px; color: #64748B; margin-bottom: 10px;">
-          Preview / Direct Verification Link:
-        </p>
-        <a id="directLinkAnchor" href="#" class="verify-link-btn">
-          Confirm Account Deletion Now &rarr;
-        </a>
-      </div>
-    </div>
+    <section id="submittedState" class="message success">
+      Your deletion request has been received.
+      Please check your email and follow the verification link
+      to confirm account deletion.
+    </section>
 
-    <!-- State 3: Confirm Deletion (When opened from email link) -->
-    <div id="confirmState" style="display: none;">
+    <section id="confirmState" class="hidden">
+
       <h1>Confirm Account Deletion</h1>
-      <p class="text">
-        You are about to permanently delete your MyPrompt account for <strong id="confirmEmailLabel"></strong>.
-        All your saved prompts, custom categories, favorites, and profile data will be permanently deleted. This action cannot be undone.
+
+      <p class="description">
+        You are about to permanently delete your MyPrompt account.
+        This action cannot be undone.
       </p>
 
-      <button type="button" id="confirmDeleteBtn" class="btn-blue">
-        Permanently Delete My Account
+      <button type="button" id="confirmDeleteBtn">
+        Confirm Delete
       </button>
-    </div>
 
-    <!-- State 4: Deletion Completed Message -->
-    <div id="completedState" class="confirmation-box" style="display: none;">
-      <h2 style="color: #15803D;">Account Successfully Deleted</h2>
-      <p id="completedMessageText">
-        Your MyPrompt account and associated personal data have been permanently deleted.
+    </section>
+
+    <section id="completedState" class="message success">
+      <h2>Account Successfully Deleted</h2>
+      <p id="completedMessage">
+        Your account has been deleted.
       </p>
+    </section>
+
+    <div id="errorMessage" class="message error"></div>
+
+    <div class="footer">
+      MyPrompt · User Privacy & Data Protection
     </div>
 
-    <div class="footer-note">
-      MyPrompt &bull; User Privacy & Data Protection
-    </div>
-  </div>
+  </main>
 
   <script>
     (function () {
+
       const form = document.getElementById("deletionForm");
       const emailInput = document.getElementById("emailInput");
       const submitBtn = document.getElementById("submitBtn");
-      const errorAlert = document.getElementById("errorAlert");
 
       const requestState = document.getElementById("requestState");
-      const submittedConfirmation = document.getElementById("submittedConfirmation");
-      const submittedMessage = document.getElementById("submittedMessage");
-      const previewVerificationLink = document.getElementById("previewVerificationLink");
-      const directLinkAnchor = document.getElementById("directLinkAnchor");
-
+      const submittedState = document.getElementById("submittedState");
       const confirmState = document.getElementById("confirmState");
-      const confirmEmailLabel = document.getElementById("confirmEmailLabel");
-      const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
-
       const completedState = document.getElementById("completedState");
-      const completedMessageText = document.getElementById("completedMessageText");
 
-      function showError(msg) {
-        errorAlert.textContent = msg;
-        errorAlert.style.display = "block";
+      const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+      const errorMessage = document.getElementById("errorMessage");
+
+      function showError(message) {
+        errorMessage.textContent = message;
+        errorMessage.style.display = "block";
       }
 
       function hideError() {
-        errorAlert.textContent = "";
-        errorAlert.style.display = "none";
+        errorMessage.textContent = "";
+        errorMessage.style.display = "none";
       }
 
-      // 1. Inspect URL parameters on page load
-      const urlParams = new URLSearchParams(window.location.search);
-      const urlToken = urlParams.get("token");
-      const urlEmail = urlParams.get("email");
+      async function readResponse(response) {
+        const data = await response.json();
 
-      if (urlToken && urlEmail) {
-        // Switch view to Confirm Deletion State
-        requestState.style.display = "none";
-        confirmState.style.display = "block";
-        confirmEmailLabel.textContent = urlEmail;
+        if (!response.ok || data.error) {
+          throw new Error(data.error || "Something went wrong. Please try again.");
+        }
+
+        return data;
+      }
+
+      // Check whether the user opened a verification link.
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("token");
+      const email = params.get("email");
+
+      if (token && email) {
+
+        requestState.classList.add("hidden");
+        confirmState.classList.remove("hidden");
 
         confirmDeleteBtn.addEventListener("click", async function () {
+
           hideError();
           confirmDeleteBtn.disabled = true;
-          confirmDeleteBtn.textContent = "Deleting Account...";
+          confirmDeleteBtn.textContent = "Deleting...";
 
           try {
-            const res = await fetch("/api/verify-and-delete", {
+            const response = await fetch("/api/verify-and-delete", {
               method: "POST",
-              headers: { "Content-Type": "application/json" },
+              headers: {
+                "Content-Type": "application/json"
+              },
               body: JSON.stringify({
-                token: urlToken,
-                email: urlEmail
+                token: token,
+                email: email
               })
             });
 
-            const data = await res.json();
+            const data = await readResponse(response);
 
-            if (!res.ok || data.error) {
-              throw new Error(data.error || "Failed to delete account. Please try again.");
-            }
-
-            // Success
-            confirmState.style.display = "none";
+            confirmState.classList.add("hidden");
             completedState.style.display = "block";
-            completedMessageText.textContent = data.message || "Your MyPrompt account and associated personal data have been permanently deleted.";
-          } catch (err) {
+
+            document.getElementById("completedMessage").textContent =
+              data.message || "Your account has been successfully deleted.";
+
+          } catch (error) {
+            showError(error.message);
             confirmDeleteBtn.disabled = false;
-            confirmDeleteBtn.textContent = "Permanently Delete My Account";
-            showError(err.message || "An unexpected error occurred during account deletion.");
+            confirmDeleteBtn.textContent = "Confirm Delete";
           }
+
         });
 
-        return; // Skip normal form init
+        return;
       }
 
-      // 2. Normal Request Account Deletion Submission Flow
-      form.addEventListener("submit", async function (e) {
-        e.preventDefault();
+      // Submit the deletion request.
+      form.addEventListener("submit", async function (event) {
+
+        event.preventDefault();
         hideError();
 
-        const email = (emailInput.value || "").trim();
+        const email = emailInput.value.trim();
 
         if (!email) {
           showError("Please enter your registered email address.");
-          emailInput.focus();
-          return;
-        }
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-          showError("Please enter a valid email address.");
-          emailInput.focus();
           return;
         }
 
         submitBtn.disabled = true;
-        submitBtn.textContent = "Processing Request...";
+        submitBtn.textContent = "Processing...";
 
         try {
-          const res = await fetch("/api/request-deletion", {
+
+          const response = await fetch("/api/request-deletion", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email })
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              email: email
+            })
           });
 
-          const data = await res.json();
+          await readResponse(response);
 
-          if (!res.ok || data.error) {
-            throw new Error(data.error || "Failed to process request. Please try again.");
-          }
+          requestState.classList.add("hidden");
+          submittedState.style.display = "block";
 
-          // Transition to submitted confirmation
-          requestState.style.display = "none";
-          submittedConfirmation.style.display = "block";
-          submittedMessage.textContent = data.message || `We have sent a verification link to ${email}. Please check your inbox and click the link to confirm account deletion.`;
+        } catch (error) {
 
-          if (data.verificationLink) {
-            previewVerificationLink.style.display = "block";
-            directLinkAnchor.href = data.verificationLink;
-          }
-        } catch (err) {
+          showError(error.message);
+
           submitBtn.disabled = false;
-          submitBtn.textContent = "Request Account Deletion";
-          showError(err.message || "An error occurred while connecting to the server. Please try again.");
+          submitBtn.textContent = "Delete Account";
+
         }
+
       });
+
     })();
   </script>
+
 </body>
 </html>
