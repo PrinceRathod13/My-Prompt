@@ -1,172 +1,163 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MyPrompt - Delete Account</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyPrompt Account Deletion</title>
+  <link rel="icon" type="image/png" href="logo.png">
   <style>
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: Arial, sans-serif;
-      background: #fff;
-      color: #0f172a;
+      background-color: #FFFFFF;
+      color: #0F172A;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       min-height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 32px 20px;
     }
-    main { width: 100%; max-width: 420px; }
-    h1, .brand { text-align: center; }
-    .brand { color: #2563eb; font-size: 28px; font-weight: bold; margin-bottom: 30px; }
-    h1 { font-size: 25px; margin-bottom: 12px; }
-    p { color: #64748b; line-height: 1.6; text-align: center; margin-bottom: 25px; }
-    label { display: block; font-weight: bold; margin-bottom: 9px; }
-    input, button {
-      width: 100%; height: 50px; border-radius: 9px; font-size: 15px;
+    .container { width: 100%; max-width: 440px; margin: 0 auto; }
+    .brand-header { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+    .brand-logo { width: 40px; height: 40px; object-fit: contain; }
+    .brand-title { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: #0F172A; }
+    h1 { font-size: 26px; font-weight: 700; line-height: 1.25; color: #0F172A; margin-bottom: 12px; letter-spacing: -0.02em; }
+    .text { font-size: 15px; line-height: 1.55; color: #475569; margin-bottom: 28px; }
+    .form-group { margin-bottom: 20px; }
+    label {
+      display: block; font-size: 13px; font-weight: 600; color: #334155;
+      margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.04em;
     }
-    input { border: 1px solid #cbd5e1; padding: 0 14px; margin-bottom: 18px; }
-    button { background: #2563eb; color: white; border: 0; cursor: pointer; font-weight: bold; }
-    button:disabled { opacity: .6; }
-    #message { display: none; padding: 15px; margin-top: 20px; border-radius: 9px; text-align: center; line-height: 1.5; }
-    .error { background: #fef2f2; color: #b91c1c; }
-    .success { background: #f0fdf4; color: #15803d; }
+    input[type="email"] {
+      width: 100%; height: 50px; padding: 0 16px; font-size: 15px; color: #0F172A;
+      background-color: #FFFFFF; border: 1.5px solid #CBD5E1; border-radius: 10px;
+      outline: none; transition: border-color 0.15s ease;
+    }
+    input[type="email"]:focus { border-color: #2563EB; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12); }
+    .btn-blue {
+      width: 100%; height: 50px; background-color: #2563EB; color: #FFFFFF;
+      font-size: 15px; font-weight: 600; border: none; border-radius: 10px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background-color 0.15s ease;
+    }
+    .btn-blue:hover:not(:disabled) { background-color: #1D4ED8; }
+    .btn-blue:disabled { background-color: #93C5FD; cursor: not-allowed; }
+    .alert {
+      display: none; padding: 14px 16px; border-radius: 10px; font-size: 14px;
+      line-height: 1.5; margin-bottom: 20px;
+    }
+    .alert-error { background-color: #FEF2F2; color: #B91C1C; border: 1px solid #FCA5A5; }
+    .alert-success { background-color: #F0FDF4; color: #15803D; border: 1px solid #86EFAC; }
+    .footer-note { margin-top: 36px; font-size: 12.5px; color: #94A3B8; line-height: 1.5; text-align: center; }
   </style>
 </head>
 <body>
-<main>
-  <div class="brand">MyPrompt</div>
-  <h1>Delete Your Account</h1>
-  <p>Enter your registered email address. Follow the secure link sent to your email to permanently delete your account and personal data.</p>
+  <div class="container">
+    <div class="brand-header">
+      <img src="logo.png" alt="MyPrompt Logo" class="brand-logo" onerror="this.style.display='none'">
+      <div class="brand-title">MyPrompt</div>
+    </div>
 
-  <form id="form">
-    <label for="email">Email Address</label>
-    <input id="email" type="email" required placeholder="Enter your registered email">
-    <button id="submit" type="submit">Delete Account</button>
-  </form>
+    <!-- Global alert (error or success) -->
+    <div id="alertBox" class="alert"></div>
 
-  <div id="message"></div>
-</main>
+    <!-- Form state -->
+    <div id="requestState">
+      <h1>Delete Your Account</h1>
+      <p class="text">
+        Enter your registered MyPrompt email address. If the account exists, it will be
+        permanently deleted along with all associated personal data.
+      </p>
 
-<script type="module">
-  import { initializeApp } from
-    "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+      <form id="deletionForm" novalidate>
+        <div class="form-group">
+          <label for="emailInput">Registered Email Address</label>
+          <input
+            type="email"
+            id="emailInput"
+            name="email"
+            placeholder="name@example.com"
+            required
+            autocomplete="email"
+          >
+        </div>
+        <button type="submit" id="submitBtn" class="btn-blue">
+          Delete My Account
+        </button>
+      </form>
+    </div>
 
-  import {
-    getAuth,
-    sendSignInLinkToEmail,
-    isSignInWithEmailLink,
-    signInWithEmailLink
-  } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+    <div class="footer-note">
+      MyPrompt &bull; User Privacy & Data Protection
+    </div>
+  </div>
 
-  // REPLACE these values with your Firebase Web App configuration.
-  const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "mypromptapp-dcc07",
-    appId: "YOUR_APP_ID"
-  };
+  <script>
+    (function () {
+      const form = document.getElementById("deletionForm");
+      const emailInput = document.getElementById("emailInput");
+      const submitBtn = document.getElementById("submitBtn");
+      const alertBox = document.getElementById("alertBox");
+      const requestState = document.getElementById("requestState");
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-
-  const form = document.getElementById("form");
-  const emailInput = document.getElementById("email");
-  const button = document.getElementById("submit");
-  const message = document.getElementById("message");
-
-  const actionCodeSettings = {
-    url: window.location.origin + window.location.pathname,
-    handleCodeInApp: true
-  };
-
-  function showMessage(text, error = false) {
-    message.textContent = text;
-    message.className = error ? "error" : "success";
-    message.style.display = "block";
-  }
-
-  // Send secure sign-in link.
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    const email = emailInput.value.trim().toLowerCase();
-    button.disabled = true;
-    button.textContent = "Sending link...";
-
-    try {
-      // Ask backend to confirm that the account exists first.
-      const check = await fetch("/api/request-deletion", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email })
-      });
-
-      const checkData = await check.json();
-      if (!check.ok || checkData.error) {
-        throw new Error(checkData.error || "Unable to process request.");
+      function showAlert(msg, type) {
+        alertBox.textContent = msg;
+        alertBox.className = "alert " + (type === "success" ? "alert-success" : "alert-error");
+        alertBox.style.display = "block";
+      }
+      function hideAlert() {
+        alertBox.textContent = "";
+        alertBox.style.display = "none";
       }
 
-      await sendSignInLinkToEmail(auth, email, actionCodeSettings);
-      localStorage.setItem("mypromptDeletionEmail", email);
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        hideAlert();
 
-      showMessage("A secure sign-in link has been sent. Open it to complete account deletion.");
-      form.style.display = "none";
-    } catch (error) {
-      showMessage(error.message, true);
-      button.disabled = false;
-      button.textContent = "Delete Account";
-    }
-  });
-
-  // Complete deletion after the user opens the email link.
-  if (isSignInWithEmailLink(auth, window.location.href)) {
-    let email = localStorage.getItem("mypromptDeletionEmail");
-
-    if (!email) {
-      email = window.prompt("Enter the email address where you received the link:");
-    }
-
-    if (email) {
-      document.querySelector("h1").textContent = "Deleting Account...";
-      form.style.display = "none";
-
-      try {
-        const result = await signInWithEmailLink(
-          auth, email, window.location.href
-        );
-
-        const idToken = await result.user.getIdToken(true);
-
-        const response = await fetch("/api/verify-and-delete", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + idToken
-          },
-          body: JSON.stringify({ email })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok || !data.success) {
-          throw new Error(data.error || "Account deletion failed.");
+        const email = (emailInput.value || "").trim();
+        if (!email) {
+          showAlert("Please enter your registered email address.", "error");
+          emailInput.focus();
+          return;
+        }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          showAlert("Please enter a valid email address.", "error");
+          emailInput.focus();
+          return;
         }
 
-        localStorage.removeItem("mypromptDeletionEmail");
-        await auth.signOut();
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Deleting Account...";
 
-        document.querySelector("h1").textContent = "Account Deleted";
-        showMessage("Your MyPrompt account has been deleted successfully.");
-        window.history.replaceState({}, document.title, window.location.pathname);
+        try {
+          const res = await fetch("/api/delete-account-direct", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email }),
+          });
 
-      } catch (error) {
-        document.querySelector("h1").textContent = "Deletion Failed";
-        showMessage(error.message, true);
-      }
-    }
-  }
-</script>
+          const data = await res.json().catch(() => ({}));
+
+          if (!res.ok || data.error) {
+            throw new Error(data.error || "Failed to delete account. Please try again.");
+          }
+
+          // Replace the form with a success message
+          requestState.innerHTML =
+            '<h1 style="color:#15803D;">Account Deleted</h1>' +
+            '<p class="text">' +
+            (data.message || "Your account and associated personal data have been permanently deleted.") +
+            "</p>";
+          showAlert(data.message || "Account deleted successfully.", "success");
+        } catch (err) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Delete My Account";
+          showAlert(err.message || "An unexpected error occurred.", "error");
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
